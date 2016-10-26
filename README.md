@@ -1,10 +1,13 @@
 # TriviaGame
-CPSC473 Web Front-End Engineering for Internet Applications
-Assignment 4 
-Using
+<p>CPSC473 Web Front-End Engineering for Internet Applications</p>
+<p>Assignment 4</p> 
+<hr>
+<h3>Using</h3>
 Node.js, Express, Redis, and MongoDB
 
-Deploy:
-1. git clone
-2. npm install
-3. npm start
+<ol>
+ <h3>Deploy:</h3>
+
+<li>git clone</li>
+<li> npm install</li>
+<li>npm start</li>
