@@ -19,6 +19,7 @@ MongoClient.connect("mongodb://localhost:27017/exampleDb", function(err, databas
     		if(!err) {
        		 	console.log("We are connected");
        		 	db=database;
+
     		    db.collection('question').find({}).toArray(function (err, result) {
     	  			if (err) {
           				console.log(err);
@@ -51,7 +52,7 @@ app.get('/question', function(req,res){
       	console.log(result);
         var randomID=Math.floor(Math.random() * result.length + 1);
       	fb={ 'question':result[randomID].question,
-      		 'Id':result[randomID].Id};
+      		 'answerId':result[randomID].answerId};
         console.log(result.length+'Found:', result[randomID]);
       } else {
         console.log('No document(s) found with defined "find" criteria!');
@@ -72,7 +73,7 @@ app.post('/question', function(req,res){
     //res.sendFile(__dirname+'/public/index.html'); 
      db.collection('question').insert({ 'question': req.body.question,
     					'answer': req.body.answer,
-    					'Id':id 
+    					'answerId':id 
     				});
      id=id+1;
 
