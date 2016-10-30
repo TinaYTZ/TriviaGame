@@ -19,7 +19,6 @@ MongoClient.connect("mongodb://localhost:27017/exampleDb", function(err, databas
     		if(!err) {
        		 	console.log("We are connected");
        		 	db=database;
-
     		    db.collection('question').find({}).toArray(function (err, result) {
     	  			if (err) {
           				console.log(err);
@@ -71,11 +70,13 @@ app.get('/score', function(req,res){
 
 app.post('/question', function(req,res){
     //res.sendFile(__dirname+'/public/index.html'); 
+    console.log(req.body.question);
      db.collection('question').insert({ 'question': req.body.question,
-    					'answer': req.body.answer,
-    					'answerId':id 
+    					                  'answer': req.body.answer,
+    					                'answerId':id 
     				});
      id=id+1;
+//     res.json({'result':'success'});
 
 });
 
