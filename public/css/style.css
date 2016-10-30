@@ -1,0 +1,19 @@
+#page-wrapper {
+    width: 960px;
+    background-color: #fff;
+    margin: 0 auto 5px;
+    padding: 20px 0 0 0;
+    border-top: 1px solid #d8d8d8;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.left.icon.input.two.wide.column{
+
+	width:120px;
+	text-align:center;
+}
+
+.ui.center.aligned.left.grid{
+
+	border-top:100px;
+}
