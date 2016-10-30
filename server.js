@@ -49,7 +49,7 @@ app.get('/question', function(req,res){
         console.log(err);
       } else if (result.length) {
       	console.log(result);
-        var randomID=Math.floor(Math.random() * result.length + 1);
+        var randomID=Math.floor(Math.random() * result.length);
       	fb={ 'question':result[randomID].question,
       		 'answerId':result[randomID].answerId};
         console.log(result.length+'Found:', result[randomID]);
@@ -82,7 +82,23 @@ app.post('/question', function(req,res){
 
 
 app.post('/answer', function(req,res){
-    res.sendFile(__dirname+'/public/index.html'); 
+	var cf; 
+	console.log('answerid',req.body.answerId );
+	console.log('answer',req.body.answer );
+	db.collection('question').find({"answerId": parseInt( req.body.answerId)}).toArray(function (err, result) {
+      	console.log(result);
+      	console.log("standard answer",result[0]["answer"]);
+      	console.log('ur answer',req.body.answer );
+      	if (result[0]["answer"]==req.body.answer)
+          {
+          	cf={'correct': true};
+  		   }
+        else{
+        	cf={'correct': false};
+        }
+		console.log(cf);
+		res.json(cf); 
+  });
 });
 
 
