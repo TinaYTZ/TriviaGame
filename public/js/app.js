@@ -20,6 +20,7 @@ $("#getQestion").click(function(e){
 	$.getJSON('/question', function (Response) {
  	// we'll simply print the response to the console // for the time being console.log(flickrResponse);
   	var res=JSON.stringify(Response);
+  	console.log("res"+res);
  	var html=Response.question;
  	$dataArea.html(html);
  	console.log(Response);//should be stringify--> JSON.stringify(Response)
@@ -39,10 +40,11 @@ $("#createQuestion").click(function(){
 $("#submitQuestion").click(function(e){
 	e.preventDefault();
     $.post("/question",
-    {
-        question: $("#question").val(),
-        answer: $("#answer").val()
-    });
+    JSON.stringify({
+        'question': $("#question").val(),
+        'answer': $("#answer").val()
+    }));
+    $("#createQFb html").text="Sucess"
     $("#question").val()='';
     $("#answer").val()='';
     $("#QAArea").hide();
