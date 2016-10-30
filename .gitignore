@@ -1,4 +1,5 @@
 .DS_Store
 node_modules/
-	
+comment line
+npm-debug.log	
 	
