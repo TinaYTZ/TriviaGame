@@ -1,73 +1,108 @@
+/* jslint maxlen: 500 */
 
+/* jshint browser: true, jquery: true, camelcase: true, indent: 2, undef: true, quotmark: single, maxlen: 80, trailing: true, curly: true, eqeqeq: true, forin: true, immed: true, latedef: true, newcap: true, nonew: true, unused: true, strict: true */
+/*global console:true */
 var main = function () { 
-	"use strict";
+	'use strict';
 // this is actually just one string,
 // but I spread it out over two lines
 // to make it more readable
+var userId;
 var $dataArea=$('#dataArea');
 $dataArea.show();
-$("#QAArea").hide();
+$('#QAArea').hide();
 var answerId;
-var url = "http://api.flickr.com/services/feeds/photos_public.gne?" +
-                  "tags=dogs&format=json&jsoncallback=?";
-                 // 'http://localhost:3000/question'
+var text = '';
+var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+for( var i=0; i < 10; i++ )
+      {  text += possible.charAt(Math.floor(Math.random() * possible.length));}
+userId = text;
 
 
-$("#getQestion").click(function(e){
+
+$.post('/user',{'userId': userId},function(response){console.log(response);});
+
+$('#score').click(function(e){
 	e.preventDefault();
-	$("#QAArea").show();
-	$("#questionForm").hide();
+	$('#QAArea').hide();
+	$('#questionForm').hide();
+	$('#scoreArea').show();
+
+	$.getJSON('/score' ,  {'userId': userId}  ,function (Response) {
+ 	// simply print the response to the console 
+  // for the time being console.log(flickrResponse);
+ 	console.log(userId);
+ 	var html=JSON.stringify(Response);
+ 	$('#scoreArea').html(html);
+ 	console.log('RESPONSE', Response);
+    //should be stringify--> JSON.stringify(Response)
+	}); 
+
+});
+
+
+$('#getQestion').click(function(e){
+    e.preventDefault();
+    
+	$('#scoreArea').hide();
+	$('#QAArea').show();
+	$('#questionForm').hide();
 	$.getJSON('/question', function (Response) {
- 	// we'll simply print the response to the console // for the time being console.log(flickrResponse);
-  	var res=JSON.stringify(Response);
-  	console.log("res"+res);
+ 	// simply print the response to the console 
+  // for the time being console.log(flickrResponse);
+  //console.log('res'+res);
  	var html=Response.question;
  	answerId=Response.answerId;
  	$dataArea.html(html);
-
- 	console.log(Response);//should be stringify--> JSON.stringify(Response)
+ 	//console.log(Response);//should be stringify--> JSON.stringify(Response)
 	}); 
 
 });
 
 
 
-$("#createQuestion").click(function(){
-
-    $("#questionForm").show();
-    $("#QAArea").hide();
+$('#createQuestion').click(function(){
+    $('#questionForm').show();
+    $('#QAArea').hide();
+    $('#scoreArea').hide();
 });
 
 
-$("#submitQuestion").click(function(e){
+$('#submitQuestion').click(function(e){
 	e.preventDefault();
-	console.log( $("#question").val());
-    $.post("/question",
+	console.log( $('#question').val());
+    $.post('/question',
     {
-        'question': $("#question").val(),
-        'answer': $("#answer").val()
+        'question': $('#question').val(),
+        'answer': $('#answer').val(),
     });
-    $("#createQFb").html("Sucess");
-    document.getElementById('question').value = "";
-    document.getElementById('answer').value = "";
-    $("#QAArea").hide();
+    $('#createQFb').html('Sucess');
+    document.getElementById('question').value = '';
+    document.getElementById('answer').value = '';
+    $('#QAArea').hide();
+    $('#scoreArea').hide();
 });
 
 
-$("#submitAnswer").click(function(e){
+$('#submitAnswer').click(function(e){
 	e.preventDefault();
-	console.log( $("#question").val());
-    $.post("/answer",
+	$('#scoreArea').hide();
+	console.log( $('#question').val());
+	console.log($('#answerQA').val());
+    $.post('/answer',
     {
         'answerId': answerId,
-        'answer': $("#answerQA").val()
+        'answer': $('#answerQA').val(),
+        'userId': userId
     });
-    // $("#answerQA").text="Sucess"
-    document.getElementById('answerQA').value = "";
+
+    // $('#answerQA').text='Sucess'
+    document.getElementById('answerQA').value = '';
     $.getJSON('/question', function (Response) {
- 	// we'll simply print the response to the console // for the time being console.log(flickrResponse);
+ 	// simply print the response to the console 
+     // for the time being console.log(flickrResponse);
   	var res=JSON.stringify(Response);
-  	console.log("res"+res);
+  	console.log('res'+res);
  	var html=Response.question;
  	answerId=Response.answerId;
  	$dataArea.html(html);
