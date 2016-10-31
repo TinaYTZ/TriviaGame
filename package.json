@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "mongod --dbpath ./data& node server.js"
+    "start": "mongod --dbpath ./mongodb/data& redis-server & node server.js"
   },
   "repository": {
     "type": "git",
