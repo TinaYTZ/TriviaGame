@@ -117,15 +117,16 @@ app.get('/score', function(req,res){
 });
 
 
-app.post('/question', function(req){
+app.post('/question', function(req,res){
     //res.sendFile(__dirname+'/public/index.html'); 
+    console.log("req"+ req)
     console.log(req.body.question);
      db.collection('question').insert({ 'question': req.body.question,
     					                  'answer': req.body.answer,
-    					                'answerId':id 
+    					                 'answerId':id 
     				});
      id=id+1;
-//     res.json({'result':'success'});
+     res.json({"result":"success"});
 
 });
 
