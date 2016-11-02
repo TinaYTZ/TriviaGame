@@ -22,6 +22,7 @@ userId = text;
 
 $.post('/user',{'userId': userId},function(response){console.log(response);});
 
+
 $('#score').click(function(e){
 	e.preventDefault();
 	$('#QAArea').hide();
@@ -71,11 +72,27 @@ $('#createQuestion').click(function(){
 $('#submitQuestion').click(function(e){
 	e.preventDefault();
 	console.log( $('#question').val());
-    $.post('/question',
-    {
-        'question': $('#question').val(),
-        'answer': $('#answer').val(),
-    });
+   $.ajax({
+            type: 'POST',
+            url: '/question',
+            timeout: 15000,
+            data: JSON.stringify({"question": $('#question').val(),
+                    "answer": $('#answer').val(),}),
+            contentType: "application/json",
+            success: function(data) {
+            //     // Get result data
+                 console.log('Result' + data);
+            //     $(obj).text(data.function+data.value);
+             },
+            error: function (result) {
+                 console.log('ajax error ' + result.status);
+             }
+        });
+//     $.post('/question',
+//     {
+//         "question": $('#question').val(),
+//         "answer": $('#answer').val(),
+//     });
     $('#createQFb').html('Sucess');
     document.getElementById('question').value = '';
     document.getElementById('answer').value = '';
@@ -89,12 +106,33 @@ $('#submitAnswer').click(function(e){
 	$('#scoreArea').hide();
 	console.log( $('#question').val());
 	console.log($('#answerQA').val());
-    $.post('/answer',
-    {
-        'answerId': answerId,
-        'answer': $('#answerQA').val(),
-        'userId': userId
-    });
+    // $.post('/answer',
+    // {
+    //     'answerId': answerId,
+    //     'answer': $('#answerQA').val(),
+    //     'userId': userId
+    // });
+    
+   $.ajax({
+            type: 'POST',
+            url: '/answer',
+            timeout: 15000,
+            data: JSON.stringify({
+                  "answerId": answerId,
+                  "answer": $('#answerQA').val(),
+                  "userId": userId}),
+            contentType: "application/json",
+            success: function(data) {
+            //     // Get result data
+                 console.log('Result' + data);
+            //     $(obj).text(data.function+data.value);
+             },
+            error: function (result) {
+                 console.log('ajax error ' + result.status);
+             }
+        });
+
+
 
     // $('#answerQA').text='Sucess'
     document.getElementById('answerQA').value = '';
