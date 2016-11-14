@@ -6,53 +6,155 @@
 var express=require('express'),
     app = express(),
     server= require('http').createServer(app);
-var mongodb = require('mongodb');
 var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 var redis = require('redis');
 var client = redis.createClient();
+var users=[];
+var scoreList=[];
+var connections=[];
+var io=require('socket.io').listen(server);
+var request = require('request');
 
 client.on('connect', function() {
     console.log('connected');
 });
 
-
-
-
-server.listen(process.env.PORT || 3000);
-console.log('server running PORT 3000...');
+server.listen(process.env.PORT || 4000);
+console.log('server running PORT 4000...');
 app.use(express.static('./'));
 
-var fb;
-var db;
-var MongoClient = mongodb.MongoClient;
-var id;
-MongoClient.connect('mongodb://localhost:27017/exampleDb', function(err, database){
-    		if(!err) {
-       		 	console.log('We are connected');
-       		 	db=database;
-    		    db.collection('question').find({}).toArray(function (err, result) {
-    	  			if (err) {
-          				console.log(err);
-     	 			} 
-     	 			else if (result.length) {
-       		 			id=result.length+1;
-       		 			console.log(id);
-     	 				} else {
-        				console.log('No document(s) found with defined "find" criteria!');
-     		 		}
-  				});
-    		}
-    		else{console.log(err);} 
+var question;
+var questionid;
 
-    	});
+function getQuestion(){
+  request.get(
+    'http://localhost:3000/question',
+    function (error, response, body) {
+    
+        if (!error ) {
+           var obj = JSON.parse(body);
+            console.log('obj', obj);
+           question=obj.question;
+           questionid=obj.answerId;
+            console.log('question', obj.question);
+            console.log('answerId', obj.answerId);
 
+
+        }
+    }
+);
+}
+getQuestion();
 
 //client.hgetall('test', function(err, reply) {
     // reply is null when the key is missing
 //    console.log('redis testing',reply);
 //});
+
+//io.sockets.emit('question', question);
+
+
+io.sockets.on('connection', function(socket){
+    connections.push(socket);
+    console.log('connected: %s sockets connected', connections.length);
+
+    function updateUsernames(){
+         io.sockets.emit('get users',users);
+     }
+    function updateQuestion(){
+         io.sockets.emit('Question',{'question':question,'answerId':questionid});
+     }
+    
+
+    function updateScore( userId, correct){
+         scoreList.push({'userId':userId, 'correct':correct} );
+         console.log(scoreList);
+         io.sockets.emit('score',scoreList);
+      }  
+
+    function clearScore( ){
+         scoreList=[];
+         io.sockets.emit('score',scoreList);
+      }  
+
+
+    //discounnect
+    socket.on('disconnect', function(){
+        //if(! socket.username)return;
+        users.splice(users.indexOf(socket.username),1);
+        connections.splice(connections.indexOf(socket),1);
+        console.log('Disconnected: %s sockets',connections.length) ;
+
+    });
+   
+
+    //new user
+    socket.on('new user',function(data,callback){
+        callback(true);
+        //console.log('data', data);
+        var username= data;
+        console.log('new username', username);
+        users.push(username);
+        console.log('users',users);
+        updateUsernames();
+        updateQuestion();
+
+
+    });
+    socket.on('new-round',function(){
+      clearScore();
+        request.get(
+        'http://localhost:3000/question',
+          function (error, response, body) {
+            if (!error ) {
+           var obj = JSON.parse(body);
+            console.log('obj', obj);
+           question=obj.question;
+           questionid=obj.answerId;
+            console.log('question', obj.question);
+            console.log('answerId', obj.answerId);
+            updateQuestion();
+
+          }
+         }
+        ); 
+      });
+    
+
+
+   socket.on('submit-answer',function(data){
+        //console.log(data);
+        console.log(data.answerId);
+         var option={uri:'http://localhost:3000/answer',
+                     method:'POST',
+                     json:{   
+                          "answerId": data.answerId,
+                          "answer": data.answer,
+                          "userId": data.userId
+                          }
+                     };
+        request(option,function (error, response, body) {
+          if (!error ) {
+            console.log("body",body);
+            console.log("body.correct", body.correct);
+//            var obj = JSON.parse(body);
+//            console.log('obj',obj);
+            if(body.correct=='correct'){
+              //broadcastwinner();
+              //updateQuestion();        
+            }
+            updateScore(data.userId,body.correct);
+            socket.emit('check-answer',body.correct);
+            //console.log(obj.question);
+            };
+        });
+  });
+
+
+});
+
 
 
 
@@ -60,104 +162,4 @@ app.get('/', function(req,res){
     res.sendFile(__dirname+'/public/index.html'); 
 
 });
-
-app.post('/user',function(req,res){
-    var createU= req.body.userId; 
-    client.hmset(createU, ['correct',0, 'wrong',0],redis.print);
-    res.json({'result':'success'});
-
-});
-
-app.get('/question', function(req,res){
-    //res.sendFile(__dirname+'/public/index.html');
-
-    db.collection('question').find({}).toArray(function (err, result) {
-      if (err) {
-        console.log(err);
-      } else if (result.length) {
-      	//console.log(result);
-        var randomID=Math.floor(Math.random() * result.length);
-      	fb={ 'question':result[randomID].question,
-      		 'answerId':result[randomID].answerId};
-        console.log(result.length+'Found:', result[randomID]);
-      } else {
-        console.log('No document(s) found with defined "find" criteria!');
-      }
-  });
-
-    res.json(fb);
-    
-});
-
-
-app.get('/score', function(req,res){
-    //var re=client.hgetall(req.body.userId);
-    var uid = req.url.split('=')[1];
-    console.log('id', uid); //req.body.userId);
-    var t;
-    client.hget(uid, 'correct',function (err, obj) {
-    console.dir(obj);
-    t=obj;
-
-});
-    console.log('correct', t);
-    var f;
-    client.hget(uid,'wrong',function (err, obj) {
-    console.dir(obj);
-    f=obj;
-    res.json({'correct':t, 'wrong': f});
-});
-    //res.json({'correct':t, 'wrong': f});
-    //res.json(re);
-    //console.log(re);
-  
-
-  //  console.log("wrong", f);
-    //res.json({'correct':t, 'wrong': f});
-});
-
-
-app.post('/question', function(req,res){
-    //res.sendFile(__dirname+'/public/index.html'); 
-    console.log("req"+ req)
-    console.log(req.body.question);
-     db.collection('question').insert({ 'question': req.body.question,
-    					                  'answer': req.body.answer,
-    					                 'answerId':id 
-    				});
-     id=id+1;
-     res.json({"result":"success"});
-
-});
-
-app.post('/user', function(req){
-    //res.sendFile(__dirname+'/public/index.html'); 
-    console.log(req.body.userId);
-    client.hmset(req.body.userId, ['correct', 0 , 'wrong', 0], redis.print);
-//     res.json({'result':'success'});
-
-});
-
-app.post('/answer', function(req,res){
-	var cf; 
-	console.log('answerid',req.body.answerId );
-	console.log('answer',req.body.answer );
-	db.collection('question').find({'answerId': parseInt( req.body.answerId)}).toArray(function (err, result) {
-      	console.log(result);
-      	console.log('standard answer',result[0].answer);
-      	console.log('ur answer',req.body.answer );
-      	if (result[0].answer===req.body.answer)
-          {
-          	cf={'correct': true};
-          	client.hincrby(req.body.userId, 'correct',1);
-  		   }
-        else{
-        	cf={'correct': false};
-        	client.hincrby(req.body.userId, 'wrong',1);
-        }
-		console.log(cf);
-		res.json(cf); 
-  });
-});
-
 
