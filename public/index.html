@@ -19,59 +19,100 @@
             <div class="ui orange message">
                 <h1>Trivia Game</h1>
             </div>
-            <div class="ui inverted orange menu">
-                <a class="active item" href="#" id="score">Score</a> <a class=
-                "item" href="#" id='getQestion'>Get a question</a> <a class=
-                "item" href="#" id='createQuestion'>Create a Question</a>
-            </div>
         </header>
-        <hr>
-        <p></p>
-        <p></p>
-        <div class="ui center aligned left grid" id='questionForm'>
-            <div class="five wide column">
-                <h1 class="ui orange image header" id='newQ'>Creates a new
-                trivia question</h1>
-                <form action="#" class="ui large form">
-                    <div class="field">
-                        <p class="info aligned left">Question :</p>
-                        <div class="ui large left icon input">
-                            <i class="help icon">&nbsp;</i> <input id=
-                            'question' name="question" type="text">
-                        </div>
+        <div class="ui center aligned left grid" id="userFormArea">
+                <form id='userForm' name="userForm">
+                    <div class="five wide column">
+                        <br>
+                        <br>
+                        <h1 class="ui orange image header center">Welcome to Trivia Game</h1>
+                        <div class="row center">
+                        </div><input id='username' placeholder="username" type=
+                        "text">
+                        <p></p><input class="submit button" type="submit"
+                        value="login">
+
                     </div>
-                    <p class="info aligned left">Answer :</p>
-                    <div class="ui left icon input column">
-                        <i class="announcement icon">&nbsp;</i> <input id=
-                        'answer' name="anwer" type="text">
-                    </div>
-                    <p></p>
-                    <div class="ui left icon input two wide column">
-                        <i class="cloud upload icon">&nbsp;</i> <input id=
-                        "submitQuestion" name="submit" type="submit">
-                    </div>
-                </form>
+                </form>        
+        </div>
+        <div id="mainArea">
+            <div class="ui inverted orange menu">
+                <a class="item" href="#" id='getQestion'>Start a new round</a> 
+                <a class="item" href="#" id="score">Score</a> 
             </div>
-            <div id='createQFb'></div>
-        </div>
-        <div class="ui center aligned left grid" id='QAArea'>
-            <form>
-                <div id='dataArea'></div>
-                <div class="ui left icon input">
-                    <i class="announcement icon">&nbsp;</i> <input id=
-                    'answerQA' name="anwer" type="text">
+            <hr>
+             <div class="ui orange sidebar-nav">
+                <h3 class="ui orange image header">Online Users:</h3>
+                <div class='ui row'>
+                    <div class='col-md-8' id='userList'></div>
                 </div>
-                <div class="ui left icon input">
-                    <i class="cloud upload icon">&nbsp;</i> <input id=
-                    "submitAnswer" name="submit" type="submit">
+            </div><!-- Projects Row -->
+                <p></p>
+                <p></p>
+                <!--
+                <div class="ui center aligned left grid" id='questionForm'>
+                    <div class="five wide column">
+                        <h1 class="ui orange image header" id='newQ'>
+                            Creates a new trivia question
+                        </h1>
+                        <form action="#" class="ui large form">
+                            <div class="field">
+                                <p class="info aligned left">Question :</p>
+                                <div class="ui large left icon input">
+                                    <i class="help icon">&nbsp;</i> <input id=
+                                    'question' name="question" type="text">
+                                </div>
+                            </div>
+                            <p class="info aligned left">Answer :</p>
+                            <div class="ui left icon input column">
+                                <i class="announcement icon">&nbsp;</i> <input id=
+                                'answer' name="anwer" type="text">
+                            </div>
+                            <p></p>
+                            <div class="ui left icon input two wide column">
+                                <i class="cloud upload icon">&nbsp;</i> <input id=
+                                "submitQuestion" name="submit" type="submit">
+                            </div>
+                        </form>
+                    </div>
+                    <div id='createQFb'></div>
                 </div>
-            </form>
+                -->
+               
+                <div class="ui row" id='QAArea'>
+                    <h1 class="ui orange image header" id='newQ'>
+                            Question:
+                    </h1>
+                    <form>
+                        <div id='dataArea'></div>
+                        <div class="ui left icon input">
+                            <i class="announcement icon">&nbsp;</i> <input id=
+                            'answerQA' name="anwer" type="text">
+                        </div>
+                        <div class="ui left icon input">
+                            <i class="cloud upload icon">&nbsp;</i> <input id=
+                            "submitAnswer" name="submit" type="submit" >
+                        </div>
+                    </form>
+                    <p></p><p></p><p></p>
+                    <div class="ui row" id="check-answer"></div>
+                    <div class="ui row" id="scroeArea">
+                        <h1 class="ui orange image header" id='newQ'>
+                            Total:
+                        </h1>                    
+                        <div id='leadboard'></div>
+                    </div>
+
+                </div>
+                <div class="ui center aligned left grid" id='scoreArea'></div>
+            </div>
         </div>
-        <div class="ui center aligned left grid" id='scoreArea'></div>
     </div>
+    </body>
     <script src="http://code.jquery.com/jquery-2.0.3.min.js">
     </script> <!-- app js -->
-     
+    <script src="/socket.io/socket.io.js">
+    </script>
     <script src="/public/js/app.js">
     </script>
 </body>
