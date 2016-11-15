@@ -110,6 +110,12 @@ socket.on('score',function(data){
 
 
 });
+ socket.on('history', function(data){
+         console.log('history',JSON.stringify(data));
+         var html= '<p>'+JSON.stringify(data)+'</p>'
+         $('#history').append(html);
+
+ });
 // $('#score').click(function(e){
 //  e.preventDefault();
 //  $('#QAArea').hide();

@@ -13,6 +13,7 @@ var redis = require('redis');
 var client = redis.createClient();
 var users=[];
 var scoreList=[];
+var history=[];
 var connections=[];
 var io=require('socket.io').listen(server);
 var request = require('request');
@@ -32,10 +33,9 @@ function getQuestion(){
   request.get(
     'http://localhost:3000/question',
     function (error, response, body) {
-    
         if (!error ) {
            var obj = JSON.parse(body);
-            console.log('obj', obj);
+           console.log('obj', obj);
            question=obj.question;
            questionid=obj.answerId;
             console.log('question', obj.question);
@@ -46,6 +46,16 @@ function getQuestion(){
     }
 );
 }
+function postUser(user){
+var option={ uri:'http://localhost:3000/user',
+                     method:'POST',
+                     json:{"userId":user} };
+        request(option,function (error) {
+          if (!error ) {
+            }
+        }); 
+      }
+
 getQuestion();
 
 //client.hgetall('test', function(err, reply) {
@@ -79,6 +89,29 @@ io.sockets.on('connection', function(socket){
          io.sockets.emit('score',scoreList);
       }  
 
+    function getHistory(){
+  
+   for (var i = 0; i < users.length; i++) {
+    var uid=users[i];
+    var option={ uri:'http://localhost:3000/score',
+                     method:'POST',
+                     json:{"userId":uid} };
+    request(option,function (error, response, body) {
+          if (!error ) {
+            console.log("body",body);
+            io.sockets.emit('history', body);
+            }
+        }); 
+  //    temp={'userId':users[i]};
+  //    userJson.push(temp);
+
+  }
+}
+     
+    function updateHistory(){
+      io.sockets.emit('history', history);
+    }
+
 
     //discounnect
     socket.on('disconnect', function(){
@@ -100,7 +133,7 @@ io.sockets.on('connection', function(socket){
         console.log('users',users);
         updateUsernames();
         updateQuestion();
-
+        postUser(data);
 
     });
     socket.on('new-round',function(){
@@ -118,8 +151,7 @@ io.sockets.on('connection', function(socket){
             updateQuestion();
 
           }
-         }
-        ); 
+         }); 
       });
     
 
@@ -147,6 +179,7 @@ io.sockets.on('connection', function(socket){
             }
             updateScore(data.userId,body.correct);
             socket.emit('check-answer',body.correct);
+            getHistory();
             //console.log(obj.question);
             };
         });
