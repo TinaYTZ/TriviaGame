@@ -11,5 +11,5 @@ Node.js, Express, Redis, and MongoDB
 <li>git clone</li>
 <li> npm install</li>
 <li>npm start</li>
-<p>api-server using Port:3000</p>
-<p>server: using Port:4000</p>
+<p>api-server using Port:3000 http://localhost:3000/</p>
+<p>server: using Port:4000 http://localhost:4000/</p>
