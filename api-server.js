@@ -85,17 +85,14 @@ app.get('/question', function(req,res){
         console.log('No document(s) found with defined "find" criteria!');
       }
   });
-
     res.json(fb);
-
 });
 
 
-app.get('/score', function(req,res){
-    //var re=client.hgetall(req.body.userId);
-    var uid = req.url.split('=')[1];
-    console.log('id', uid); //req.body.userId);
+app.post('/score', function(req,res){
     var t;
+    var uid=req.body.userId;
+    console.log('req.body.userId', req.body.userId);
     client.hget(uid, 'correct',function (err, obj) {
     console.dir(obj);
     t=obj;
@@ -106,16 +103,45 @@ app.get('/score', function(req,res){
     client.hget(uid,'wrong',function (err, obj) {
     console.dir(obj);
     f=obj;
-    res.json({'correct':t, 'wrong': f});
+    res.json({'userId':req.body.userId,'correct':t, 'wrong': f});
 });
-    //res.json({'correct':t, 'wrong': f});
-    //res.json(re);
-    //console.log(re);
+
+});
+
+
+// app.post('/score', function(req,res){
+//     var t;
+//     console.log('req.body.userId', req.body.userId);
+//     for (var i=0; i<req.body.userId.length;i++){
+//       var records=[];
+//       client.hget(req.body.userId[i], 'correct',function (err, obj) {
+//        console.dir(obj);
+//        t=obj;
+//        console.log('correct', t);
+//       });
+//       var f;
+//       client.hget(req.body.userId[i],'wrong',function (err, obj) {
+//       console.dir(obj);
+//       f=obj;
+//       var string="t  "+t+"  f  "+f;
+//       console.log('string'+string)
+//       console.log("t",t,"f",f);
+//       records.push("user"+req.body.userId[i]+"result"+string);
+//       console.log("records"+ records);        
+//       var str=records;
+//       }); 
+//     }
+//    res.json({"history":str});
+
+//     //res.json({'correct':t, 'wrong': f});
+//     //res.json(re);
+//     //console.log(re);
   
 
-  //  console.log("wrong", f);
-    //res.json({'correct':t, 'wrong': f});
-});
+//   //  console.log("wrong", f);
+
+//     //res.json({'correct':t, 'wrong': f});
+// });
 
 
 app.post('/question', function(req,res){
