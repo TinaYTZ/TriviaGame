@@ -7,8 +7,7 @@
     <meta content="" name="description">
     <meta content="" name="author">
     <title>TriviaGame</title><!-- Semantic UI Core CSS -->
-    <link href="/public/css/semantic/dist/semantic.min.css" rel="stylesheet"
-    type="text/css"><!-- Custom CSS -->
+    <link href="/public/css/semantic/dist/semantic.min.css" rel="stylesheet" type="text/css"><!-- Custom CSS -->
     <link href="/public/css/style.css" rel="stylesheet" type="text/css">
     <script src="http://code.jquery.com/jquery-latest.min.js">
     </script>
@@ -21,35 +20,29 @@
             </div>
         </header>
         <div class="ui center aligned left grid" id="userFormArea">
-                <form id='userForm' name="userForm">
-                    <div class="five wide column">
-                        <br>
-                        <br>
-                        <h1 class="ui orange image header center">Welcome to Trivia Game</h1>
-                        <div class="row center">
-                        </div><input id='username' placeholder="username" type=
-                        "text">
-                        <p></p><input class="submit button" type="submit"
-                        value="login">
-
-                    </div>
-                </form>        
+            <form id='userForm' name="userForm">
+                <div class="five wide column">
+                    <br>
+                    <br>
+                    <h1 class="ui orange image header center">Welcome to Trivia Game</h1>
+                    <div class="row center"></div><input id='username' placeholder="username" type="text">
+                    <p></p><input class="submit button" type="submit" value="login">
+                </div>
+            </form>
         </div>
         <div id="mainArea">
             <div class="ui inverted orange menu">
-                <a class="item" href="#" id='getQestion'>Start a new round</a> 
-                <!--<a class="item" href="#" id="score">Score</a> -->
+                <a class="item" href="#" id='getQestion'>Start a new round</a> <!--<a class="item" href="#" id="score">Score</a> -->
             </div>
             <hr>
-             <div class="ui orange sidebar-nav">
+            <div class="ui orange sidebar-nav">
                 <h3 class="ui orange image header">Online Users:</h3>
                 <div class='ui row'>
                     <div class='col-md-8' id='userList'></div>
                 </div>
             </div><!-- Projects Row -->
-                <p></p>
-                <p></p>
-                <!--
+            <p></p>
+            <p></p><!--
                 <div class="ui center aligned left grid" id='questionForm'>
                     <div class="five wide column">
                         <h1 class="ui orange image header" id='newQ'>
@@ -78,43 +71,35 @@
                     <div id='createQFb'></div>
                 </div>
                 -->
-               
-                <div class="ui row" id='QAArea'>
-                    <h1 class="ui orange image header" id='newQ'>
-                            Question:
-                    </h1>
-                    <form>
-                        <div id='dataArea'></div>
-                        <div class="ui left icon input">
-                            <i class="announcement icon">&nbsp;</i> <input id=
-                            'answerQA' name="anwer" type="text">
-                        </div>
-                        <div class="ui left icon input">
-                            <i class="cloud upload icon">&nbsp;</i> <input id=
-                            "submitAnswer" name="submit" type="submit" >
-                        </div>
-                    </form>
-                    <p></p><p></p><p></p>
-                    <div class="ui row" id="check-answer"></div>
-                    <div class="ui row" id="scroeArea">                   
-                        <div id='leadboard'></div>
-                        <h1 class="ui orange image header" id='newQ'>
-                            history:
-                        </h1> 
-                        <div id='history'>
-                        </div>
+            <div class="ui row" id='QAArea'>
+                <h1 class="ui orange image header" id='newQ'>Question:</h1>
+                <form>
+                    <div id='dataArea'></div>
+                    <div class="ui left icon input">
+                        <i class="announcement icon">&nbsp;</i> <input id='answerQA' name="anwer" type="text">
                     </div>
-
+                    <div class="ui left icon input">
+                        <i class="cloud upload icon">&nbsp;</i> <input id="submitAnswer" name="submit" type="submit">
+                    </div>
+                </form>
+                <p></p>
+                <p></p>
+                <p></p>
+                <div class="ui row" id="check-answer"></div>
+                <div class="ui row" id="scroeArea">
+                    <div id='leadboard'></div>
+                    <h1 class="ui orange image header" id='newQ'>history:</h1>
+                    <div id='history'></div>
                 </div>
-                <div class="ui center aligned left grid" id='scoreArea'></div>
             </div>
+            <div class="ui center aligned left grid" id='scoreArea'></div>
         </div>
     </div>
-    </body>
     <script src="http://code.jquery.com/jquery-2.0.3.min.js">
     </script> <!-- app js -->
+     
     <script src="/socket.io/socket.io.js">
-    </script>
+    </script> 
     <script src="/public/js/app.js">
     </script>
 </body>

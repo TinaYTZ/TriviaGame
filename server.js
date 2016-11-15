@@ -13,7 +13,6 @@ var redis = require('redis');
 var client = redis.createClient();
 var users=[];
 var scoreList=[];
-var history=[];
 var connections=[];
 var io=require('socket.io').listen(server);
 var request = require('request');
@@ -98,7 +97,7 @@ io.sockets.on('connection', function(socket){
                      json:{"userId":uid} };
     request(option,function (error, response, body) {
           if (!error ) {
-            console.log("body",body);
+            console.log('body',body);
             io.sockets.emit('history', body);
             }
         }); 
@@ -108,10 +107,6 @@ io.sockets.on('connection', function(socket){
   }
 }
      
-    function updateHistory(){
-      io.sockets.emit('history', history);
-    }
-
 
     //discounnect
     socket.on('disconnect', function(){
@@ -169,11 +164,11 @@ io.sockets.on('connection', function(socket){
                      };
         request(option,function (error, response, body) {
           if (!error ) {
-            console.log("body",body);
-            console.log("body.correct", body.correct);
+            console.log('body',body);
+            console.log('body.correct', body.correct);
 //            var obj = JSON.parse(body);
 //            console.log('obj',obj);
-            if(body.correct=='correct'){
+            if(body.correct==='correct'){
               //broadcastwinner();
               //updateQuestion();        
             }
@@ -181,7 +176,7 @@ io.sockets.on('connection', function(socket){
             socket.emit('check-answer',body.correct);
             getHistory();
             //console.log(obj.question);
-            };
+            }
         });
   });
 
